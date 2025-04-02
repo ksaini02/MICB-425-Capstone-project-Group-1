@@ -22,20 +22,20 @@ ggplot(alpha_napA_longer, aes(y=placerun, x=value)) +
 # reading in and filtering Saanich data to include desired columns
 saanich <- read.csv("Saanich_Data.csv") |>
   mutate(depth = Depth*1000) |>
-  select(depth, WS_O2, WS_NO3, WS_H2S)
+  select(depth, WS_O2, WS_NO3, WS_H2S, Mean_CH4)
 
 #calculating mean of each concentration at each depth
-saanich_mod <- aggregate(cbind(WS_O2, WS_NO3, WS_H2S) ~ depth, data = saanich, FUN = mean)
+saanich_mod <- aggregate(cbind(WS_O2, WS_NO3, WS_H2S, Mean_CH4) ~ depth, data = saanich, FUN = mean)
 
 # combining DNA alpha diversity with Saanich data
 DNA_combined <- merge(alpha_napA, saanich_mod, by.x = "placerun", by.y = "depth")
 
 #plotting DNA alpha diversity (rooted PD) against oxygen, sulfide, and nitrate concentrations
 DNA_combined_longer <- DNA_combined |>
-  pivot_longer(cols = c("WS_O2", "WS_NO3", "WS_H2S", "placerun"),
+  pivot_longer(cols = c("WS_O2", "WS_NO3", "WS_H2S", "placerun", "Mean_CH4"),
                names_to = "measure",
                values_to = "value")
-combined_order <- c("depth", "WS_O2", "WS_NO3", "WS_H2S")
+combined_order <- c("depth", "WS_O2", "WS_NO3", "WS_H2S", "Mean_CH4")
 DNA_combined_longer$measure <- factor(DNA_combined_longer$measure, levels = combined_order)
 rootedpd <- ggplot(DNA_combined_longer, aes(y=value, x=rooted_pd)) +
   geom_point(aes(colour=measure, shape=measure), size=4) +
@@ -60,7 +60,6 @@ redox <- ggplot(DNA_conc_longer, aes(y=WS_O2, x=value)) +
   labs(title = "DNA Alpha Diversity Metric against Redox Level",
        x = "Value",
        y = "log O2 (uM)") +
-  theme_minimal() +
   facet_grid(. ~metric, scales = "free_x") +
   scale_y_log10()
 redox
@@ -71,7 +70,6 @@ depth <- ggplot(DNA_conc_longer, aes(y=placerun, x=value)) +
   labs(title = "DNA Alpha Diversity Metric against Depth",
        x = "Value",
        y = "Depth (m)") +
-  theme_minimal() +
   facet_grid(. ~metric, scales = "free_x")
 depth
 
@@ -81,26 +79,22 @@ sulfide <- ggplot(DNA_conc_longer, aes(y=WS_H2S, x=value)) +
   labs(title = "DNA Alpha Diversity Metric against Hydrogen Sulfide",
        x = "Value",
        y = "log H2S (uM)") +
-  theme_minimal() +
-  facet_grid(. ~metric, scales = "free_x") +
+  facet_grid(. ~metric, scales = "free_x")  +
   scale_y_log10()
 sulfide
 
 nitrate <- ggplot(DNA_conc_longer, aes(y=WS_NO3, x=value)) +
   geom_point(aes(colour=metric, shape=metric), size=4) +
-  scale_y_reverse() +
   labs(title = "DNA Alpha Diversity Metric against Nitrate",
        x = "Value",
        y = "NO3 (uM)") +
-  theme_minimal() +
   facet_grid(. ~metric, scales = "free_x") 
 nitrate
 
-
-# visualizing beta diversity
-beta_napA <- read.csv("capstone/beta_diversity/SI_TS_NapA_beta_diversity.csv")
-
-
-
-
-
+methane <- ggplot(DNA_conc_longer, aes(y=Mean_CH4, x=value)) +
+  geom_point(aes(colour=metric, shape=metric), size=4) +
+  labs(title = "DNA Alpha Diversity Metric against Methane",
+       x = "Value",
+       y = "CH4 (uM)") +
+  facet_grid(. ~metric, scales = "free_x") 
+methane
