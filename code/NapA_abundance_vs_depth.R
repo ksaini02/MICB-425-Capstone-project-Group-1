@@ -48,7 +48,7 @@ dna_abundance_vs_depth = ggplot(dna_merged_data, aes(x = as.factor(Depth_m), y =
                   label = round(total_abundance, 0)),
               inherit.aes = FALSE,
               size = 5, color = "black")
-a
+
 ##RNA
 
 rna_merged_data <- rna_merged_data %>%
