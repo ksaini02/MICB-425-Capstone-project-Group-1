@@ -1,6 +1,5 @@
 library(ggplot2)
-library(dplyr)
-library(tidyr)
+library(tidyverse)
 library(ggsignif)
 
 dna_merged_data = read.delim("merged_depths_dna.tsv", header = TRUE, sep = "\t", stringsAsFactors = FALSE)
