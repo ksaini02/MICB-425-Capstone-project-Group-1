@@ -1,8 +1,5 @@
 library(tidyverse)
 library(ggplot2)
-library(tidyverse)
-library(dplyr)
-library(ggplot2)
 
 ##Figure 2: Plotting Depth against Nutrient Concentrations 
 
