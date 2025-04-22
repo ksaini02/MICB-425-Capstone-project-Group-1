@@ -103,8 +103,7 @@ saanich_data <- read.csv("Saanich_data.csv") |>
   filter(Depth == 0.010 | Depth == 0.100 | Depth == 0.12 | Depth == .135 | Depth==.150 | Depth==.165 | Depth==.200)|> 
   mutate("Depth" =Depth*1000)
 
-merged_data<- cbind(saanich_data, alpha_div)
-long_data <- merged_data %>%
+long_data <- saanich_data %>%
   pivot_longer(cols = c("WS_NO3", "Mean_NO2", "Mean_NH4", "WS_O2", "WS_H2S"), 
                names_to = "Nutrient", 
                values_to = "Concentration")
@@ -117,7 +116,6 @@ plot<- ggplot(long_data, aes(x = Concentration, y = Depth, color= Nutrient)) +
        y = "Depth (m)") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))+
   facet_grid(. ~Nutrient, scales= "free_x")
-
 
 ggsave("Depth_v_Concentration.png", plot, height = 6, width = 8, units = "in", dpi = 300)
 
